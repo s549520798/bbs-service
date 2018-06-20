@@ -42,9 +42,12 @@ public class Post {
     //openId
     @Column(name = "open_id")
     private String openId;
-
     @Column(name = "image_urls")
     private String imageUrls;
+    @Column(name = "type")
+    private String type;
+    @Column(name = "cost_type")
+    private String costType;
 
 
     public Long getId() {
@@ -149,5 +152,42 @@ public class Post {
 
     public void setImageUrls(String imageUrls) {
         this.imageUrls = imageUrls;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getCostType() {
+        return costType;
+    }
+
+    public void setCostType(String costType) {
+        this.costType = costType;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", startProvince='" + startProvince + '\'' +
+                ", startCity='" + startCity + '\'' +
+                ", destination='" + destination + '\'' +
+                ", gatherTime='" + gatherTime + '\'' +
+                ", participatorMax='" + participatorMax + '\'' +
+                ", participatorMin='" + participatorMin + '\'' +
+                ", beginDate='" + beginDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", openId='" + openId + '\'' +
+                ", imageUrls='" + imageUrls + '\'' +
+                ", type='" + type + '\'' +
+                ", costType='" + costType + '\'' +
+                '}';
     }
 }
