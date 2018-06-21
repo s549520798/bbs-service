@@ -1,53 +1,49 @@
 package com.hlct.bbsservice.post;
 
-import javax.persistence.*;
-import javax.validation.groups.ConvertGroup;
-import java.util.List;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
+import java.util.Date;
+
+
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    //帖子 标题
     @Column(name = "title")
-    private String title;
-    //帖子 内容
+    private String title;           //帖子 标题
     @Column(name = "content")
-    private String content;
-    //出发地 省份
+    private String content;         //帖子 内容
     @Column(name = "start_province")
-    private String startProvince;
-    //出发地 city
+    private String startProvince;   //出发地 省份
     @Column(name = "start_city")
-    private String startCity;
-    //目的地
+    private String startCity;       //出发地 city
     @Column(name = "destination")
-    private String destination;
-    //集结时间
+    private String destination;     //目的地
     @Column(name = "gather_time")
-    private String gatherTime;
-    //参与者 最多人数
+    private String gatherTime;      //集合时间
     @Column(name = "participator_max")
-    private String participatorMax;
-    //参与者 最少人数
+    private String participatorMax;    //参与者 最多人数
     @Column(name = "participator_min")
-    private String participatorMin;
-    //开始时间
+    private String participatorMin;    //参与者 最少人数
     @Column(name = "begin_date")
-    private String beginDate;
-    //结束时间
+    private String beginDate;     //开始时间
     @Column(name = "end_date")
-    private String endDate;
-    //openId
+    private String endDate;       //活动结束日期
     @Column(name = "open_id")
-    private String openId;
+    private String openId;        //发帖人对应的openid
     @Column(name = "image_urls")
-    private String imageUrls;
+    private String imageUrls;     // 图片url
     @Column(name = "type")
-    private String type;
+    private String type;          //活动类型
     @Column(name = "cost_type")
-    private String costType;
+    private String costType;      //活动经费类型
+    @CreatedDate
+    @Column(name = "post_time")
+    private Date postTime;        //发布时间
 
 
     public Long getId() {

@@ -2,6 +2,7 @@ package com.hlct.bbsservice.common;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,13 @@ import javax.servlet.ServletContext;
 class FileUploadController {
 
     private final static Logger log = LoggerFactory.getLogger(FileUploadController.class);
+    private final ServiceProperties serviceProperties;
+
+    @Autowired
+    public FileUploadController(ServiceProperties serviceProperties) {
+        this.serviceProperties = serviceProperties;
+    }
+
     @GetMapping
     public String upload(){
         return "upload";
@@ -35,7 +43,7 @@ class FileUploadController {
         log.info("[文件名称] - [{}]", file.getOriginalFilename());
         log.info("[文件大小] - [{}]", file.getSize());
         // TODO 将文件写入到指定目录（具体开发中有可能是将文件写入到云存储/或者指定目录通过 Nginx 进行 gzip 压缩和反向代理，此处只是为了演示故将地址写成本地电脑指定目录）
-        file.transferTo(new File("F:\\app\\bbs\\images\\" + file.getOriginalFilename()));
+        file.transferTo(new File(serviceProperties.getUploadPath() + serviceProperties.getImagePath()+ file.getOriginalFilename()));
 //        Map<String, String> result = new HashMap<>(16);
 //        result.put("contentType", file.getContentType());
 //        result.put("filePath","http://192.168.1.104:8080/images/" + file.getOriginalFilename());
@@ -44,7 +52,9 @@ class FileUploadController {
         ResultInfo<String> resultInfo = new ResultInfo<>();
         resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
         resultInfo.setMessage("上传成功");
-        resultInfo.setData("http://192.168.1.104:8080/images/" + file.getOriginalFilename());
+        resultInfo.setData(serviceProperties.getServiceDomain()
+                + serviceProperties.getImagePath() + file.getOriginalFilename());
+        //resultInfo.setData("http://192.168.1.104:8080/images/" + file.getOriginalFilename());
         return resultInfo;
     }
 
@@ -56,7 +66,7 @@ class FileUploadController {
         List<Map<String, String>> results = new ArrayList<>();
         for (MultipartFile file : files) {
             // TODO Spring Mvc 提供的写入方式
-            file.transferTo(new File("F:\\app\\bbs\\" + file.getOriginalFilename()));
+            file.transferTo(new File(serviceProperties.getUploadPath() + file.getOriginalFilename()));
             Map<String, String> map = new HashMap<>(16);
             map.put("contentType", file.getContentType());
             map.put("fileName", file.getOriginalFilename());
