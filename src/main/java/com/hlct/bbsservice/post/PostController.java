@@ -1,10 +1,12 @@
 package com.hlct.bbsservice.post;
 
 import com.hlct.bbsservice.common.ResultInfo;
-import javafx.geometry.Pos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,7 +38,7 @@ public class PostController {
         return resultInfo;
     }
 
-    @GetMapping(value = "getAllPost")
+    @GetMapping(value = "/getAllPost")
     public ResultInfo<List<Post>> getAllPost() {
         ResultInfo<List<Post>> resultInfo = new ResultInfo<>();
         List<Post> list = repository.findAll();
@@ -44,12 +46,28 @@ public class PostController {
         return resultInfo;
     }
 
-    @PostMapping(value = "getPostsByOpenId")
-    public ResultInfo<List<Post>> getPostsByOpenId(@PathVariable String openId) {
+    @PostMapping(value = "/getPostsByOpenId")
+    public ResultInfo<List<Post>> getPostsByOpenId(@RequestParam String openId) {
         ResultInfo<List<Post>> resultInfo = new ResultInfo<>();
         log.info("获取到的openId 是：" + openId);
         List<Post> list = repository.findPostsByOpenId(openId);
         getListReturn(resultInfo, list);
+        return resultInfo;
+    }
+
+    @GetMapping(value = "/{page}/post")
+    public ResultInfo<Page<Post>> getPosts(@PathVariable int page){
+        int pageSize = 10;
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"postTime"));
+        PageRequest pageRequest =  PageRequest.of(page,pageSize,sort);
+        Page<Post> postPage = repository.findAll(pageRequest);
+        ResultInfo<Page<Post>> resultInfo = new ResultInfo<>();
+        log.info("一共post数目 ======" + postPage.getTotalElements());
+        log.info("一共分了多少页 =====" + postPage.getTotalPages());
+        log.info("当前页面所有数 =====" + postPage.getContent().size());
+        resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
+        resultInfo.setMessage("获取page成功");
+        resultInfo.setData(postPage);
         return resultInfo;
     }
 
@@ -63,5 +81,6 @@ public class PostController {
             resultInfo.setMessage("获取失败");
         }
     }
+
 
 }
