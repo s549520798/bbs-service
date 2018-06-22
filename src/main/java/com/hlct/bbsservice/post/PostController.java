@@ -15,11 +15,13 @@ import java.util.List;
 @RequestMapping(value = "/post")
 public class PostController {
     private final PostRepository repository;
+    private final PostService postService;
     private static final Logger log = LoggerFactory.getLogger(PostController.class);
 
     @Autowired
-    public PostController(PostRepository repository) {
+    public PostController(PostRepository repository,PostServiceImpl postService) {
         this.repository = repository;
+        this.postService = postService;
     }
 
     @PostMapping(value = "/save")
@@ -27,7 +29,7 @@ public class PostController {
         ResultInfo<Post> resultInfo = new ResultInfo<>();
         log.info(post.toString());
         if (post != null) {
-            Post post1 = repository.save(post);
+            Post post1 = postService.savePost(post);
             resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
             resultInfo.setMessage("发布成功");
             resultInfo.setData(post1);
@@ -41,7 +43,7 @@ public class PostController {
     @GetMapping(value = "/getAllPost")
     public ResultInfo<List<Post>> getAllPost() {
         ResultInfo<List<Post>> resultInfo = new ResultInfo<>();
-        List<Post> list = repository.findAll();
+        List<Post> list = postService.getAll();
         getListReturn(resultInfo, list);
         return resultInfo;
     }
@@ -50,7 +52,7 @@ public class PostController {
     public ResultInfo<List<Post>> getPostsByOpenId(@RequestParam String openId) {
         ResultInfo<List<Post>> resultInfo = new ResultInfo<>();
         log.info("获取到的openId 是：" + openId);
-        List<Post> list = repository.findPostsByOpenId(openId);
+        List<Post> list = postService.getPostsByOpenId(openId);
         getListReturn(resultInfo, list);
         return resultInfo;
     }
@@ -70,7 +72,24 @@ public class PostController {
         resultInfo.setData(postPage);
         return resultInfo;
     }
-
+    @GetMapping(value = "/getPostWithUser")
+    public ResultInfo<List<PostAndUser>> getPostsWithUser(){
+        ResultInfo<List<PostAndUser>> resultInfo = new ResultInfo<>();
+        List<PostAndUser> list = postService.getAllPostsWithUser();
+        if (list != null && list.size() > 0){
+            log.info("size = " + list.size());
+            for (PostAndUser postAndUser : list){
+                log.info(postAndUser.toString());
+            }
+            resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
+            resultInfo.setMessage("获取成功！");
+            resultInfo.setData(list);
+        }else {
+            resultInfo.setCode(ResultInfo.RESULT_ERROR);
+            resultInfo.setMessage("没有获取到数据");
+        }
+        return resultInfo;
+    }
     private void getListReturn(ResultInfo<List<Post>> resultInfo, List<Post> list) {
         if (list != null && list.size() > 0){
             resultInfo.setCode(ResultInfo.RESULT_SUCCESS);

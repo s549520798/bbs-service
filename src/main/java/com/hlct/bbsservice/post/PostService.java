@@ -9,7 +9,7 @@ interface PostService {
      *
      * @param post 帖子
      */
-    void savePost(Post post);
+    Post savePost(Post post);
 
     /**
      * 根据id 获取post
@@ -33,4 +33,9 @@ interface PostService {
      */
     List<Post> getPostsByOpenId(String openId);
 
+    /**
+     * 获取到 所有的post 并且 其对应的openId 也会获取到
+     * @return list< 对应的组合类 >
+     */
+    List<PostAndUser> getAllPostsWithUser();
 }
