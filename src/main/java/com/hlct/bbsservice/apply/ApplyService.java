@@ -10,4 +10,17 @@ public interface ApplyService {
      * @return list
      */
     List<Apply> findApplyByPostId(Long postId);
+
+    /**
+     * 查找 postID 对应的apply 数量
+     * @return  申请该post 的 apply数量
+     */
+    int countByPostId(Long postId);
+
+    /**
+     * 将apply储存到数据库
+     * @param apply apply
+     * @return apply
+     */
+    Apply save(Apply apply);
 }
