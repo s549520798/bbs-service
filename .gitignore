@@ -16,6 +16,7 @@
 *.iml
 *.ipr
 *.log
+*.gz
 ### NetBeans ###
 /nbproject/private/
 /build/
@@ -23,3 +24,7 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+### files ##
+pfx-password.txt
+1528518566174.key
+1528518566174.pem
