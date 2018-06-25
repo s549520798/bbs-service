@@ -1,6 +1,8 @@
 package com.hlct.bbsservice.post;
 
 
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 interface PostService {
@@ -38,4 +40,6 @@ interface PostService {
      * @return list< 对应的组合类 >
      */
     List<PostAndUser> getAllPostsWithUser();
+
+    List<Post> getPagePosts(int page);
 }

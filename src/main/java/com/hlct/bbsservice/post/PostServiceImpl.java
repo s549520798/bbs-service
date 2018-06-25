@@ -2,6 +2,9 @@ package com.hlct.bbsservice.post;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -44,6 +47,19 @@ public class PostServiceImpl implements PostService {
         String sql = "SELECT * FROM wx_user u Inner JOIN post p WHERE u.open_id = p.open_id";
         List<PostAndUser> list = jdbcTemplate.query(sql,new Object[]{},new BeanPropertyRowMapper<>(PostAndUser.class));
         return list;
+    }
+
+    @Override
+    public List<Post> getPagePosts(int page) {
+        int pageSize = 10;
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"postTime"));
+        PageRequest pageRequest =  PageRequest.of(page,pageSize,sort);
+        Page<Post> postPage = repository.findAll(pageRequest);
+        if (postPage.getContent().size() > 0){
+            return null;
+        }else {
+            return null;
+        }
     }
 
 }

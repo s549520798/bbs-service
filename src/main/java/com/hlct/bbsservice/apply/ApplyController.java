@@ -21,7 +21,16 @@ public class ApplyController {
 
     @PostMapping(value = "/save")
     public ResultInfo<Apply> save(Apply apply){
+        ResultInfo<Apply> resultInfo = new ResultInfo<>();
         Apply a = applyService.save(apply);
-        return null;
+        if (a != null){
+            resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
+            resultInfo.setMessage("提交成功");
+            resultInfo.setData(a);
+        }else {
+            resultInfo.setCode(ResultInfo.RESULT_ERROR);
+            resultInfo.setMessage("提交失败");
+        }
+        return resultInfo;
     }
 }
