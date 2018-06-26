@@ -8,10 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -38,72 +35,40 @@ public class WxUserController {
     }
 
     @RequestMapping(value = "/getOpenId", method = RequestMethod.POST)
-    public ResultInfo getOpenId(@Param(value = "code") String code) {
+    public ResultInfo getOpenId(@RequestParam(value = "code") String code) {
         ResultInfo<LoginUser> resultInfo = new ResultInfo<>();
         log.info("收到的 code = " + code);
-        OkHttpClient httpClient = new OkHttpClient();
-        RequestBody requestBody = new FormBody.Builder()
-                .add("appid", "wx2f344148ddce304c")
-                .add("secret", "7fab8b8de80a5e73aed96aaf26c3f5f1")
-                .add("js_code", code)
-                .add("grant_type", "authorization_code")
-                .build();
-        Request request = new Request.Builder()
-                .url("https://api.weixin.qq.com/sns/jscode2session")
-                .post(requestBody)
-                .build();
-        Response response = null;
-        try {
-            response = httpClient.newCall(request).execute();
-            if (response.isSuccessful()) {
-                resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
-                String wxResult = response.body().string();
-                log.info("从微信后台获取到的信息 ：" +  wxResult);
-                WxIdInfo info = mapper.readValue(wxResult, WxIdInfo.class);
-
-                WxUser wxUser = repository.findWxUserByOpenId(info.getOpenid());
-                if (wxUser == null) {
-                    System.out.println("用户不存在，新加用户");
-                    WxUser user = new WxUser();
-                    user.setOpenId(info.getOpenid());
-                    user.setSessionKey(info.getSession_key());
-                    repository.save(user);
-
-                    resultInfo.setMessage("用户不存在，新加用户");
-                    LoginUser loginUser = new LoginUser();
-                    loginUser.setOldUser(false);
-                    loginUser.setOpenid(info.getOpenid());
-                    resultInfo.setData(loginUser);
-                } else {
-                    if (wxUser.getNickName() == null) {
-                        log.info("存在openId ，但是不存在用户信息");
-                        resultInfo.setMessage("存在openId ，但是不存在用户信息");
-                        LoginUser loginUser = new LoginUser();
-                        loginUser.setOldUser(false);
-                        loginUser.setOpenid(wxUser.getOpenId());
-                        resultInfo.setData(loginUser);
-                    } else {
-                        log.info("openId 和 用户数据都已经存在");
-                        resultInfo.setMessage("openId 和 用户数据都已经存在");
-                        LoginUser loginUser = new LoginUser();
-                        loginUser.setOldUser(true);
-                        loginUser.setOpenid(wxUser.getOpenId());
-                        loginUser.setNickName(wxUser.getNickName());
-                        loginUser.setCity(wxUser.getCity());
-                        loginUser.setProvince(wxUser.getProvince());
-                        loginUser.setGender(wxUser.getGender());
-                        loginUser.setAvatarUrl(wxUser.getAvatarUrl());
-                        loginUser.setCountry(wxUser.getCountry());
-                        loginUser.setLanguage(wxUser.getLanguage());
-                        resultInfo.setData(loginUser);
-                    }
-                }
-            } else {
-                resultInfo.setCode(ResultInfo.RESULT_ERROR);
-                resultInfo.setMessage(response.message());
+        WxUser user = wxUserService.getOpenId(code);
+        if (user != null) {
+            //获取到openId,但是不确定用户是否授权了用户信息
+            resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
+            if (user.getNickName() != null) {
+                //根据用户nickName判断用户已经授权过信息
+                log.info("openId 和 用户数据都已经存在");
+                resultInfo.setMessage("openId获取成功，已存在数据用户");
+                LoginUser loginUser = new LoginUser();
+                loginUser.setOldUser(true);
+                loginUser.setOpenid(user.getOpenId());
+                loginUser.setNickName(user.getNickName());
+                loginUser.setCity(user.getCity());
+                loginUser.setProvince(user.getProvince());
+                loginUser.setGender(user.getGender());
+                loginUser.setAvatarUrl(user.getAvatarUrl());
+                loginUser.setCountry(user.getCountry());
+                loginUser.setLanguage(user.getLanguage());
+                resultInfo.setData(loginUser);
+            }else {
+                //用户没有授权
+                resultInfo.setMessage("获取openID成功，无数据新用户");
+                LoginUser loginUser = new LoginUser();
+                loginUser.setOldUser(false);
+                loginUser.setOpenid(user.getOpenId());
+                resultInfo.setData(loginUser);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        }else {
+            //获取openID失败
+            resultInfo.setCode(ResultInfo.RESULT_ERROR);
+            resultInfo.setMessage("获取用户信息失败");
         }
         log.info("返回结果："+ resultInfo.toString());
         return resultInfo;

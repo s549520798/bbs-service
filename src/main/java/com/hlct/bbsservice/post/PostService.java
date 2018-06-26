@@ -35,11 +35,19 @@ interface PostService {
      */
     List<Post> getPostsByOpenId(String openId);
 
-    /**
-     * 获取到 所有的post 并且 其对应的openId 也会获取到
-     * @return list< 对应的组合类 >
-     */
-    List<PostAndUser> getAllPostsWithUser();
 
-    List<Post> getPagePosts(int page);
+    /**
+     * 根据 int 页数获取post page
+     * @param page  int page
+     * @param pageCount 每页容纳数量
+     * @return post page
+     */
+    Page<Post> getPostPage(int page,int pageCount);
+
+    /**
+     * 获取帖子列表
+     * @param page int page
+     * @return list
+     */
+    List<PostPlus> getPagePosts(int page);
 }

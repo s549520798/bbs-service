@@ -11,6 +11,8 @@ public interface WxUserRepository extends JpaRepository<WxUser, Long> {
 
     WxUser findWxUserByOpenId(String openId);
 
+    boolean existsByOpenId(String openId);
+
     @Modifying
     @Query("update WxUser wxu set wxu.nickName = :nickName , wxu.gender = :gender,wxu.language = " +
             ":language,wxu.city = :city,wxu.province = :province,wxu.country = :country,wxu.avatarUrl" +

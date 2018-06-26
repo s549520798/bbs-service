@@ -14,13 +14,11 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/post")
 public class PostController {
-    private final PostRepository repository;
     private final PostService postService;
     private static final Logger log = LoggerFactory.getLogger(PostController.class);
 
     @Autowired
-    public PostController(PostRepository repository,PostServiceImpl postService) {
-        this.repository = repository;
+    public PostController(PostServiceImpl postService) {
         this.postService = postService;
     }
 
@@ -59,10 +57,7 @@ public class PostController {
 
     @GetMapping(value = "/{page}/post")
     public ResultInfo<Page<Post>> getPosts(@PathVariable int page){
-        int pageSize = 10;
-        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"postTime"));
-        PageRequest pageRequest =  PageRequest.of(page,pageSize,sort);
-        Page<Post> postPage = repository.findAll(pageRequest);
+        Page<Post> postPage = postService.getPostPage(page,10);
         ResultInfo<Page<Post>> resultInfo = new ResultInfo<>();
         log.info("一共post数目 ======" + postPage.getTotalElements());
         log.info("一共分了多少页 =====" + postPage.getTotalPages());
@@ -72,15 +67,11 @@ public class PostController {
         resultInfo.setData(postPage);
         return resultInfo;
     }
-    @GetMapping(value = "/getPostWithUser")
-    public ResultInfo<List<PostAndUser>> getPostsWithUser(){
-        ResultInfo<List<PostAndUser>> resultInfo = new ResultInfo<>();
-        List<PostAndUser> list = postService.getAllPostsWithUser();
+    @GetMapping(value = "/{page}/getPosts")
+    public ResultInfo<List<PostPlus>> getPostsWithUser(@PathVariable int page){
+        ResultInfo<List<PostPlus>> resultInfo = new ResultInfo<>();
+        List<PostPlus> list = postService.getPagePosts(page);
         if (list != null && list.size() > 0){
-            log.info("size = " + list.size());
-            for (PostAndUser postAndUser : list){
-                log.info(postAndUser.toString());
-            }
             resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
             resultInfo.setMessage("获取成功！");
             resultInfo.setData(list);
