@@ -74,6 +74,22 @@ public class WxUserController {
         return resultInfo;
     }
 
+    @GetMapping(value = "/{openId}/info")
+    public ResultInfo<WxUser> getInfo(@PathVariable String openId){
+        ResultInfo<WxUser> resultInfo = new ResultInfo<>();
+        WxUser wxUser = wxUserService.findByOpenId(openId);
+        if (wxUser != null){
+            resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
+            resultInfo.setMessage("用户信息获取成功");
+            resultInfo.setData(wxUser);
+        }else{
+            resultInfo.setCode(ResultInfo.RESULT_ERROR);
+            resultInfo.setMessage("用户信息获取失败");
+        }
+
+        return resultInfo;
+    }
+
     @RequestMapping(value = "/postUser", method = RequestMethod.POST)
     public String postUser(@ModelAttribute WxUser user) {
         return "success";

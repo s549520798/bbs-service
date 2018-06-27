@@ -12,4 +12,11 @@ public interface WxUserService {
     WxUser getWxUserByOpenId(String openId);
 
     int updateWxUserByOpenId(String openId, WxUser wxUser);
+
+    /**
+     * 根据openId 获取 user
+     * @param openId openId
+     * @return wxUser
+     */
+    WxUser findByOpenId(String openId);
 }

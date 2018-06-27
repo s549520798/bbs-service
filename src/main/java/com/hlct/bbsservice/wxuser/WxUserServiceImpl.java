@@ -21,13 +21,14 @@ public class WxUserServiceImpl implements WxUserService {
     private JdbcTemplate jdbcTemplate;
     private final OkHttpClient okHttpClient;
     private ObjectMapper mapper;
+    private final WxUserRepository repository;
+
     @Autowired
-    private WxUserRepository repository;
-    @Autowired
-    public WxUserServiceImpl(JdbcTemplate jdbcTemplate,ObjectMapper mapper) {
+    public WxUserServiceImpl(JdbcTemplate jdbcTemplate, ObjectMapper mapper, WxUserRepository repository) {
         this.jdbcTemplate = jdbcTemplate;
         this.okHttpClient = new OkHttpClient();
         this.mapper = mapper;
+        this.repository = repository;
     }
 
     @Override
@@ -92,6 +93,11 @@ public class WxUserServiceImpl implements WxUserService {
                 "country = ?,avatar_url = ? WHERE open_id = ?";
         return jdbcTemplate.update(sql,wxUser.getNickName(),wxUser.getGender(),wxUser.getLanguage(),
         wxUser.getCity(),wxUser.getProvince(),wxUser.getCountry(),wxUser.getAvatarUrl(),openId);
+    }
+
+    @Override
+    public WxUser findByOpenId(String openId) {
+        return repository.findByOpenId(openId);
     }
 
 

@@ -158,6 +158,14 @@ public class Post {
         this.type = type;
     }
 
+    public Date getPostTime() {
+        return postTime;
+    }
+
+    public void setPostTime(Date postTime) {
+        this.postTime = postTime;
+    }
+
     public String getCostType() {
         return costType;
     }

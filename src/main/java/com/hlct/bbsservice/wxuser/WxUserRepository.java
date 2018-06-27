@@ -11,6 +11,8 @@ public interface WxUserRepository extends JpaRepository<WxUser, Long> {
 
     WxUser findWxUserByOpenId(String openId);
 
+    WxUser findByOpenId(String openId);
+
     boolean existsByOpenId(String openId);
 
     @Modifying

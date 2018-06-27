@@ -29,4 +29,9 @@ public class ApplyServiceImpl implements ApplyService {
     public Apply save(Apply apply) {
         return repository.save(apply);
     }
+
+    @Override
+    public List<Apply> findAllByOpenId(String openId) {
+        return repository.findAllByOpenId(openId);
+    }
 }

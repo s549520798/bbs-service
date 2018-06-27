@@ -23,4 +23,6 @@ public interface ApplyService {
      * @return apply
      */
     Apply save(Apply apply);
+
+    List<Apply> findAllByOpenId(String openId);
 }

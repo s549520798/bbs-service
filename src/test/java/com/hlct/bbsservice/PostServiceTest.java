@@ -16,5 +16,7 @@ public class PostServiceTest {
     @Test
     public void testPostService(){
         Assert.assertEquals(postService.getPagePosts(0).size(),2);
+
+
     }
 }

@@ -1,7 +1,11 @@
 package com.hlct.bbsservice.apply;
 
-import javax.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
+import java.util.Date;
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "apply")
 public class Apply {
@@ -12,6 +16,8 @@ public class Apply {
     private Long postId; // 对应的post id
     @Column(name = "open_id")
     private String openId; //对应申请人的openId
+    @Column(name = "name")
+    private String name; //申请人姓名
     @Column(name = "phone_number")
     private String phoneNumber; //申请人的手记号码
     @Column(name = "ec_name")
@@ -22,6 +28,9 @@ public class Apply {
     private String message; //留言
     @Column(name = "review_status")
     private String reviewStatus; // 审核状态
+    @CreatedDate
+    @Column(name = "apply_time")
+    private Date applyTime;
 
     public Long getId() {
         return id;
@@ -87,17 +96,35 @@ public class Apply {
         this.reviewStatus = reviewStatus;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Date getApplyTime() {
+        return applyTime;
+    }
+
+    public void setApplyTime(Date applyTime) {
+        this.applyTime = applyTime;
+    }
+
     @Override
     public String toString() {
         return "Apply{" +
                 "id=" + id +
                 ", postId=" + postId +
                 ", openId='" + openId + '\'' +
+                ", name='" + name + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", ecName='" + ecName + '\'' +
                 ", ecPhone='" + ecPhone + '\'' +
                 ", message='" + message + '\'' +
                 ", reviewStatus='" + reviewStatus + '\'' +
+                ", applyTime=" + applyTime +
                 '}';
     }
 }
