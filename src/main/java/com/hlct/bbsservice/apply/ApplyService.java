@@ -1,5 +1,7 @@
 package com.hlct.bbsservice.apply;
 
+import com.hlct.bbsservice.post.PostPlus;
+
 import java.util.List;
 
 public interface ApplyService {
@@ -24,5 +26,17 @@ public interface ApplyService {
      */
     Apply save(Apply apply);
 
+    /**
+     * 通过openId 找到我申请的 post
+     * @param openId openId
+     * @return apply list
+     */
     List<Apply> findAllByOpenId(String openId);
+
+    /**
+     *  根据openID 来查找其申请的posts
+     * @param openId openId
+     * @return post plus list
+     */
+    List<PostPlus> findApplyPostsbyOpenId(String openId);
 }

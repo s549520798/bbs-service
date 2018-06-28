@@ -1,6 +1,7 @@
 package com.hlct.bbsservice.apply;
 
 import com.hlct.bbsservice.common.ResultInfo;
+import com.hlct.bbsservice.post.PostPlus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +44,33 @@ public class ApplyController {
             resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
             resultInfo.setMessage("获取列表成功");
             resultInfo.setData(list);
-        }else {
+        } else {
             resultInfo.setCode(ResultInfo.RESULT_ERROR);
             resultInfo.setMessage("获取列表失败");
+        }
+        return resultInfo;
+    }
+
+    @GetMapping(value = "/{postId}/count")
+    public ResultInfo<Integer> getApplyCount(@PathVariable long postId) {
+        ResultInfo<Integer> resultInfo = new ResultInfo<>();
+        resultInfo.setData(applyService.countByPostId(postId));
+        resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
+        resultInfo.setMessage("请求成功");
+        return resultInfo;
+    }
+
+    @GetMapping(value = "/{openId}/applyPosts")
+    public ResultInfo<List<PostPlus>> getApplyPosts(@PathVariable String openId) {
+        ResultInfo<List<PostPlus>> resultInfo = new ResultInfo<>();
+        List<PostPlus> list = applyService.findApplyPostsbyOpenId(openId);
+        if (list != null && list.size() > 0) {
+            resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
+            resultInfo.setMessage("请求成功");
+            resultInfo.setData(list);
+        } else {
+            resultInfo.setCode(ResultInfo.RESULT_ERROR);
+            resultInfo.setMessage("列表为空");
         }
         return resultInfo;
     }

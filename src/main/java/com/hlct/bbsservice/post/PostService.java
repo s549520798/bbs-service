@@ -28,12 +28,6 @@ interface PostService {
      */
     List<Post> getAll();
 
-    /**
-     * 通过openid 获取 帖子
-     * @param openId 用户 openid
-     * @return list
-     */
-    List<Post> getPostsByOpenId(String openId);
 
 
     /**
@@ -50,4 +44,7 @@ interface PostService {
      * @return list
      */
     List<PostPlus> getPagePosts(int page);
+
+
+    List<Post> getAllByOpenId(String openId);
 }

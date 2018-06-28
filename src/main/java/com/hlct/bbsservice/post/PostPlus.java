@@ -1,5 +1,6 @@
 package com.hlct.bbsservice.post;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hlct.bbsservice.wxuser.WxUser;
 
 /**
@@ -11,6 +12,14 @@ public class PostPlus {
     private WxUser wxUser;
     private boolean isCalling;
 
+    public PostPlus() {
+    }
+
+    public PostPlus(Post post, WxUser wxUser, boolean isCalling) {
+        this.post = post;
+        this.wxUser = wxUser;
+        this.isCalling = isCalling;
+    }
 
     public Post getPost() {
         return post;
@@ -34,5 +43,14 @@ public class PostPlus {
 
     public void setCalling(boolean calling) {
         isCalling = calling;
+    }
+
+    @Override
+    public String toString() {
+        return "PostPlus{" +
+                "post=" + post +
+                ", wxUser=" + wxUser +
+                ", isCalling=" + isCalling +
+                '}';
     }
 }

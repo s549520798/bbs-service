@@ -24,7 +24,7 @@ public class Apply {
     private String ecName; // emergency contact name 紧急联系人姓名
     @Column(name = "ec_phone")
     private String ecPhone; // 紧急联系人电话
-
+    @Column(name = "message",length = 1000)
     private String message; //留言
     @Column(name = "review_status")
     private String reviewStatus; // 审核状态

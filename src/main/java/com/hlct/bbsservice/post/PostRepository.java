@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post ,Long>,PagingAndSortingRepository<Post,Long> {
 
+    List<Post> findAllByOpenId(String openId);
 
-    List<Post> findPostsByOpenId(String openId);
 }

@@ -46,11 +46,11 @@ public class PostController {
         return resultInfo;
     }
 
-    @PostMapping(value = "/getPostsByOpenId")
-    public ResultInfo<List<Post>> getPostsByOpenId(@RequestParam String openId) {
+    @GetMapping(value = "/{openId}/posts")
+    public ResultInfo<List<Post>> getPostsByOpenId(@PathVariable String openId) {
         ResultInfo<List<Post>> resultInfo = new ResultInfo<>();
         log.info("获取到的openId 是：" + openId);
-        List<Post> list = postService.getPostsByOpenId(openId);
+        List<Post> list = postService.getAllByOpenId(openId);
         getListReturn(resultInfo, list);
         return resultInfo;
     }

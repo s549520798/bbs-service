@@ -1,12 +1,13 @@
 package com.hlct.bbsservice.post;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
 
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 public class Post {
@@ -15,7 +16,7 @@ public class Post {
     private Long id;
     @Column(name = "title")
     private String title;           //帖子 标题
-    @Column(name = "content")
+    @Column(name = "content", length = 2000)
     private String content;         //帖子 内容
     @Column(name = "start_province")
     private String startProvince;   //出发地 省份
@@ -35,7 +36,7 @@ public class Post {
     private String endDate;       //活动结束日期
     @Column(name = "open_id")
     private String openId;        //发帖人对应的openid
-    @Column(name = "image_urls")
+    @Column(name = "image_urls", length = 2000)
     private String imageUrls;     // 图片url
     @Column(name = "type")
     private String type;          //活动类型

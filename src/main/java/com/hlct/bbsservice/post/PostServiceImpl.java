@@ -48,11 +48,6 @@ public class PostServiceImpl implements PostService {
         return repository.findAll();
     }
 
-    @Override
-    public List<Post> getPostsByOpenId(String openId) {
-        return repository.findPostsByOpenId(openId);
-    }
-
 
 
     @Override
@@ -87,6 +82,12 @@ public class PostServiceImpl implements PostService {
         }else {
             return null;
         }
+    }
+
+    @Override
+    public List<Post> getAllByOpenId(String openId) {
+
+        return repository.findAllByOpenId(openId);
     }
 
 }
