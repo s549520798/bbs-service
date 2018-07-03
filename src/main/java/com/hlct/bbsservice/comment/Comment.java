@@ -1,7 +1,11 @@
 package com.hlct.bbsservice.comment;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import javax.persistence.*;
 import java.util.Date;
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 public class Comment {
     @Id
@@ -11,7 +15,12 @@ public class Comment {
     private Long postId;    //评论对象
     @Column(name = "open_id")
     private String openId;  //评论人openId
+    @Column(name = "nick_name")
+    private String nickName;  //评论人名
+    @Column(name = "avatar_url")
+    private String avatarUrl; //头像地址
     private String comment; //评论内容
+    @CreatedDate
     @Column(name = "comment_time")
     private Date commentTime; //评论时间
 
@@ -39,6 +48,22 @@ public class Comment {
         this.openId = openId;
     }
 
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
     public String getComment() {
         return comment;
     }
@@ -61,6 +86,8 @@ public class Comment {
                 "id=" + id +
                 ", postId=" + postId +
                 ", openId='" + openId + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
                 ", comment='" + comment + '\'' +
                 ", commentTime=" + commentTime +
                 '}';
