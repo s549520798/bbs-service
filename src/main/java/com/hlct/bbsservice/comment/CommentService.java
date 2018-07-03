@@ -1,6 +1,7 @@
 package com.hlct.bbsservice.comment;
 
 import com.hlct.bbsservice.post.Post;
+import com.hlct.bbsservice.post.PostPlus;
 
 import java.util.List;
 
@@ -24,5 +25,5 @@ public interface CommentService {
      * @param openId 用户openId
      * @return 帖子列表
      */
-    List<Post> getPostByOpenId(String openId);
+    List<PostPlus> getPostByOpenId(String openId);
 }
