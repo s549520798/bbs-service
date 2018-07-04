@@ -1,13 +1,13 @@
 package com.hlct.bbsservice.collection;
 
 import com.hlct.bbsservice.common.ResultInfo;
+import com.hlct.bbsservice.post.PostPlus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/collection")
@@ -31,6 +31,20 @@ public class CollectionController {
         }else {
             resultInfo.setCode(ResultInfo.RESULT_ERROR);
             resultInfo.setMessage("收藏失败");
+        }
+        return resultInfo;
+    }
+    @GetMapping(value = "/{openId}/getCollections")
+    public ResultInfo<List<PostPlus>> getCollectedPosts(@PathVariable String openId){
+        ResultInfo<List<PostPlus>> resultInfo = new ResultInfo<>();
+        List<PostPlus> list = service.getPostsByOpenId(openId);
+        if (list.size() > 0){
+            resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
+            resultInfo.setMessage("获取收藏列表成功");
+            resultInfo.setData(list);
+        }else {
+            resultInfo.setCode(ResultInfo.RESULT_ERROR);
+            resultInfo.setMessage("获取收藏列表失败");
         }
         return resultInfo;
     }
