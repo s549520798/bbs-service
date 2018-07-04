@@ -2,6 +2,8 @@ package com.hlct.bbsservice.comment;
 
 import com.hlct.bbsservice.common.ResultInfo;
 import com.hlct.bbsservice.post.PostPlus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/comment")
 public class CommentController {
-
+    private static final Logger log = LoggerFactory.getLogger(CommentController.class);
     private final CommentService commentService;
 
     public CommentController(CommentServiceImpl commentService) {
@@ -20,10 +22,12 @@ public class CommentController {
     public ResultInfo<Comment> save(@ModelAttribute Comment comment) {
         ResultInfo<Comment> resultInfo = new ResultInfo<>();
         Comment com = commentService.save(comment);
+
         if (com != null) {
             resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
             resultInfo.setMessage("评论成功");
             resultInfo.setData(com);
+            log.info("提交评论成功： " + com.toString());
         } else {
             resultInfo.setCode(ResultInfo.RESULT_ERROR);
             resultInfo.setMessage("评论失败");

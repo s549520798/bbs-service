@@ -19,7 +19,8 @@ public class Comment {
     private String nickName;  //评论人名
     @Column(name = "avatar_url")
     private String avatarUrl; //头像地址
-    private String comment; //评论内容
+    @Column(name = "comment_content")
+    private String commentContent; //评论内容
     @CreatedDate
     @Column(name = "comment_time")
     private Date commentTime; //评论时间
@@ -64,12 +65,12 @@ public class Comment {
         this.avatarUrl = avatarUrl;
     }
 
-    public String getComment() {
-        return comment;
+    public String getCommentContent() {
+        return commentContent;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setCommentContent(String commentContent) {
+        this.commentContent = commentContent;
     }
 
     public Date getCommentTime() {
@@ -88,7 +89,7 @@ public class Comment {
                 ", openId='" + openId + '\'' +
                 ", nickName='" + nickName + '\'' +
                 ", avatarUrl='" + avatarUrl + '\'' +
-                ", comment='" + comment + '\'' +
+                ", commentContent='" + commentContent + '\'' +
                 ", commentTime=" + commentTime +
                 '}';
     }
