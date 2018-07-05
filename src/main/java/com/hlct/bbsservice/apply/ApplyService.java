@@ -15,12 +15,14 @@ public interface ApplyService {
 
     /**
      * 查找 postID 对应的apply 数量
-     * @return  申请该post 的 apply数量
+     *
+     * @return 申请该post 的 apply数量
      */
     int countByPostId(Long postId);
 
     /**
      * 将apply储存到数据库
+     *
      * @param apply apply
      * @return apply
      */
@@ -28,15 +30,19 @@ public interface ApplyService {
 
     /**
      * 通过openId 找到我申请的 post
+     *
      * @param openId openId
      * @return apply list
      */
     List<Apply> findAllByOpenId(String openId);
 
     /**
-     *  根据openID 来查找其申请的posts
+     * 根据openID 来查找其申请的posts
+     *
      * @param openId openId
      * @return post plus list
      */
     List<PostPlus> findApplyPostsbyOpenId(String openId);
+
+
 }
