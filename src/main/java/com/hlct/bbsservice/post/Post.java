@@ -26,6 +26,8 @@ public class Post {
     private String destination;     //目的地
     @Column(name = "gather_time")
     private String gatherTime;      //集合时间
+    @Column(name = "gather_place")
+    private String gatherPlace;     //集合地点
     @Column(name = "participator_max")
     private String participatorMax;    //参与者 最多人数
     @Column(name = "participator_min")
@@ -101,6 +103,14 @@ public class Post {
 
     public void setGatherTime(String gatherTime) {
         this.gatherTime = gatherTime;
+    }
+
+    public String getGatherPlace() {
+        return gatherPlace;
+    }
+
+    public void setGatherPlace(String gatherPlace) {
+        this.gatherPlace = gatherPlace;
     }
 
     public String getParticipatorMax() {
@@ -185,6 +195,7 @@ public class Post {
                 ", startCity='" + startCity + '\'' +
                 ", destination='" + destination + '\'' +
                 ", gatherTime='" + gatherTime + '\'' +
+                ", gatherPlace='" + gatherPlace + '\'' +
                 ", participatorMax='" + participatorMax + '\'' +
                 ", participatorMin='" + participatorMin + '\'' +
                 ", beginDate='" + beginDate + '\'' +
@@ -193,6 +204,7 @@ public class Post {
                 ", imageUrls='" + imageUrls + '\'' +
                 ", type='" + type + '\'' +
                 ", costType='" + costType + '\'' +
+                ", postTime=" + postTime +
                 '}';
     }
 }
