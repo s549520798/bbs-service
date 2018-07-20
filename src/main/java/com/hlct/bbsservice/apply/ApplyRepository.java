@@ -11,4 +11,6 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
     int countByPostId(Long postId);
 
     List<Apply> findAllByOpenId(String openId);
+
+    boolean existsByPostIdAndOpenId(Long postId, String openId);
 }

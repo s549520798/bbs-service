@@ -27,6 +27,11 @@ public class WxUser {
     private String country;
     @Column
     private String avatarUrl;
+    @Column(name = "phone_number")
+    private String phoneNumber;
+    @Column(name = "real_name")
+    private String realName;
+
 
     public Long getId() {
         return id;
@@ -108,6 +113,22 @@ public class WxUser {
         this.avatarUrl = avatarUrl;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
     @Override
     public String toString() {
         return "WxUser{" +
@@ -121,6 +142,8 @@ public class WxUser {
                 ", province='" + province + '\'' +
                 ", country='" + country + '\'' +
                 ", avatarUrl='" + avatarUrl + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", realName='" + realName + '\'' +
                 '}';
     }
 
@@ -134,7 +157,6 @@ public class WxUser {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(openId);
     }
 }

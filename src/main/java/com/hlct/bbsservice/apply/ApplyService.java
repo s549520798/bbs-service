@@ -1,8 +1,11 @@
 package com.hlct.bbsservice.apply;
 
 import com.hlct.bbsservice.post.PostPlus;
+import com.hlct.bbsservice.wxuser.WxUser;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface ApplyService {
     /**
@@ -42,7 +45,10 @@ public interface ApplyService {
      * @param openId openId
      * @return post plus list
      */
-    List<PostPlus> findApplyPostsbyOpenId(String openId);
+    List<PostPlus> findApplyPostsByOpenId(String openId);
 
+    List<ApplyUser> findApplyPersonByPostId(long postId);
+
+    boolean hasApplied(long postId,String openId);
 
 }
