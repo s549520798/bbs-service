@@ -4,6 +4,7 @@ package com.hlct.bbsservice.wxuser;
 public interface WxUserService {
     /**
      * 根据 小程序端传过来的 code ,到微信后台请求 用户唯一标识openID
+     *
      * @param code 小程序端传过来的code
      * @return 用户唯一标识
      */
@@ -15,8 +16,17 @@ public interface WxUserService {
 
     /**
      * 根据openId 获取 user
+     *
      * @param openId openId
      * @return wxUser
      */
     WxUser findByOpenId(String openId);
+
+    /**
+     * 根据openId 更新用户电话
+     *
+     * @param phone  手机号吗
+     * @param openId openId
+     */
+    void updatePhoneNumberByOpenId(String phone, String openId);
 }

@@ -10,8 +10,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
+import java.beans.Transient;
 import java.io.IOException;
 
 @Service
@@ -98,6 +100,11 @@ public class WxUserServiceImpl implements WxUserService {
     @Override
     public WxUser findByOpenId(String openId) {
         return repository.findByOpenId(openId);
+    }
+    @Transactional
+    @Override
+    public void updatePhoneNumberByOpenId(String phone, String openId) {
+        repository.updatePhoneNumberByOpenId(phone,openId);
     }
 
 

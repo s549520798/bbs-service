@@ -33,7 +33,7 @@ public class ApplyController {
             resultInfo.setData(a);
         } else {
             resultInfo.setCode(ResultInfo.RESULT_ERROR);
-            resultInfo.setMessage("提交失败");
+            resultInfo.setMessage("是发帖人或者已经申请过");
         }
         return resultInfo;
     }
@@ -105,4 +105,45 @@ public class ApplyController {
         }
         return resultInfo;
     }
+
+    @GetMapping(value = "/{postId}/getApplicant")
+    public ResultInfo<List<ApplyUser>> getApplicant(@PathVariable long postId,
+                                                    @RequestParam(name = "openId",required = true) String openId) {
+        log.info("applicant 接收到的openId = " + openId);
+        ResultInfo<List<ApplyUser>> resultInfo = new ResultInfo<>();
+        List<ApplyUser> list = applyService.getApplicants(postId, openId);
+        if (list == null) {
+            //表示不是post的发布者
+            resultInfo.setCode(ResultInfo.RESULT_ERROR);
+            resultInfo.setMessage("不是发布者，或者没有申请者");
+            resultInfo.setData(null);
+        } else {
+            resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
+            resultInfo.setMessage("获取列表成功");
+            resultInfo.setData(list);
+        }
+        return resultInfo;
+    }
+
+    @PostMapping(value = "/{applyId}/updateStatus")
+    public ResultInfo<Apply> updateStatus(@PathVariable long applyId,
+                                          @RequestParam(name = "openId") String openId,
+                                          @RequestParam(name = "status",defaultValue = "修改") String status) {
+        ResultInfo<Apply> resultInfo = new ResultInfo<>();
+        int index = applyService.updateStatusByOpenIdAndApplyId(openId, applyId, status);
+        if (index < 0) {
+            resultInfo.setCode(ResultInfo.RESULT_ERROR);
+            resultInfo.setMessage("不是发帖人");
+        } else if (index == 1) {
+            Apply apply = applyService.findOne(applyId);
+            resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
+            resultInfo.setMessage("更新成功");
+            resultInfo.setData(apply);
+        } else {
+            resultInfo.setCode(ResultInfo.RESULT_ERROR);
+            resultInfo.setMessage("更新失败");
+        }
+        return resultInfo;
+    }
+
 }

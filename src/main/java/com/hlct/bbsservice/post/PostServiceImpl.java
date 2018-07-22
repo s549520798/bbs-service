@@ -2,6 +2,7 @@ package com.hlct.bbsservice.post;
 
 
 import com.hlct.bbsservice.apply.ApplyRepository;
+import com.hlct.bbsservice.wxuser.WxUser;
 import com.hlct.bbsservice.wxuser.WxUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +89,17 @@ public class PostServiceImpl implements PostService {
     public List<Post> getAllByOpenId(String openId) {
 
         return repository.findAllByOpenId(openId);
+    }
+
+    @Override
+    public PostPlus getPostAndAuthor(long postId) {
+        PostPlus postPlus = new PostPlus();
+        Post post = repository.getOne(postId);
+        postPlus.setPost(post);
+        WxUser wxUser = wxUserRepository.findByOpenId(post.getOpenId());
+        postPlus.setWxUser(wxUser);
+        //TODO 找出是否正在召集，根据通过人数进行确认。
+        return postPlus;
     }
 
 }

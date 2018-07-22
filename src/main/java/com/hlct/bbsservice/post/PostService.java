@@ -47,4 +47,11 @@ interface PostService {
 
 
     List<Post> getAllByOpenId(String openId);
+
+    /**
+     * 根据帖子Id 获取 帖子信息和 发布者信息
+     * @param postId postId
+     * @return postPlus
+     */
+    PostPlus getPostAndAuthor(long postId);
 }

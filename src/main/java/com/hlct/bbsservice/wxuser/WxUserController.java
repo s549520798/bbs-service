@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -57,7 +58,7 @@ public class WxUserController {
                 loginUser.setCountry(user.getCountry());
                 loginUser.setLanguage(user.getLanguage());
                 resultInfo.setData(loginUser);
-            }else {
+            } else {
                 //用户没有授权
                 resultInfo.setMessage("获取openID成功，无数据新用户");
                 LoginUser loginUser = new LoginUser();
@@ -65,24 +66,24 @@ public class WxUserController {
                 loginUser.setOpenid(user.getOpenId());
                 resultInfo.setData(loginUser);
             }
-        }else {
+        } else {
             //获取openID失败
             resultInfo.setCode(ResultInfo.RESULT_ERROR);
             resultInfo.setMessage("获取用户信息失败");
         }
-        log.info("返回结果："+ resultInfo.toString());
+        log.info("返回结果：" + resultInfo.toString());
         return resultInfo;
     }
 
     @GetMapping(value = "/{openId}/info")
-    public ResultInfo<WxUser> getInfo(@PathVariable String openId){
+    public ResultInfo<WxUser> getInfo(@PathVariable String openId) {
         ResultInfo<WxUser> resultInfo = new ResultInfo<>();
         WxUser wxUser = wxUserService.findByOpenId(openId);
-        if (wxUser != null){
+        if (wxUser != null) {
             resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
             resultInfo.setMessage("用户信息获取成功");
             resultInfo.setData(wxUser);
-        }else{
+        } else {
             resultInfo.setCode(ResultInfo.RESULT_ERROR);
             resultInfo.setMessage("用户信息获取失败");
         }
@@ -129,6 +130,20 @@ public class WxUserController {
             resultInfo.setMessage("未收到openid");
         }
 
+        return resultInfo;
+    }
+
+    @PostMapping(value = "/{openId}/updatePhone")
+    public ResultInfo updatePhoneNumber(@RequestParam String phone, @PathVariable String openId) {
+        ResultInfo resultInfo = new ResultInfo();
+        try {
+            wxUserService.updatePhoneNumberByOpenId(phone, openId);
+            resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
+            resultInfo.setMessage("更新成功");
+        } catch (Exception e) {
+            resultInfo.setCode(ResultInfo.RESULT_ERROR);
+            resultInfo.setMessage(e.getMessage());
+        }
         return resultInfo;
     }
 }

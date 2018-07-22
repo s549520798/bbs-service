@@ -31,6 +31,8 @@ public interface ApplyService {
      */
     Apply save(Apply apply);
 
+    Apply findOne(long applyId);
+
     /**
      * 通过openId 找到我申请的 post
      *
@@ -47,8 +49,30 @@ public interface ApplyService {
      */
     List<PostPlus> findApplyPostsByOpenId(String openId);
 
+    /**
+     * 根据posstId 获取申请人和申请列表
+     * @param postId postId
+     * @return list
+     */
     List<ApplyUser> findApplyPersonByPostId(long postId);
 
+    /**
+     *  检查 用户（openId）是否申请了 该post
+     * @param postId postId
+     * @param openId wxUser 唯一Id
+     * @return 是否申请了
+     */
     boolean hasApplied(long postId,String openId);
+
+    /**
+     * 根据 用户id 和 post id 获取申请人列表，如果postId 对应的openId 不是传过来的openId  则说明
+     *  现在的用户不是发布者，不能获取申请人信息
+     * @param postId postId
+     * @param openId wxUser 唯一Id
+     * @return list
+     */
+    List<ApplyUser> getApplicants(long postId,String openId);
+
+    int updateStatusByOpenIdAndApplyId(String openId,long applyId,String status);
 
 }

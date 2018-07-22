@@ -1,10 +1,13 @@
 package com.hlct.bbsservice.apply;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "apply")
@@ -26,8 +29,10 @@ public class Apply {
     private String ecPhone; // 紧急联系人电话
     @Column(name = "message",length = 1000)
     private String message; //留言
+    @Column(name = "has_confirm",nullable = false)
+    private int hasConfirm = 0;            //0标记没有审核，1标记审核过了
     @Column(name = "review_status")
-    private String reviewStatus; // 审核状态
+    private String reviewStatus; // 审核状态: 未审核 ， 通过 拒绝
     @CreatedDate
     @Column(name = "apply_time")
     private Date applyTime;
@@ -112,6 +117,14 @@ public class Apply {
         this.applyTime = applyTime;
     }
 
+    public int getHasConfirm() {
+        return hasConfirm;
+    }
+
+    public void setHasConfirm(int hasConfirm) {
+        this.hasConfirm = hasConfirm;
+    }
+
     @Override
     public String toString() {
         return "Apply{" +
@@ -123,6 +136,7 @@ public class Apply {
                 ", ecName='" + ecName + '\'' +
                 ", ecPhone='" + ecPhone + '\'' +
                 ", message='" + message + '\'' +
+                ", hasConfirm=" + hasConfirm +
                 ", reviewStatus='" + reviewStatus + '\'' +
                 ", applyTime=" + applyTime +
                 '}';
@@ -135,11 +149,14 @@ public class Apply {
 
         Apply apply = (Apply) o;
 
-        return id != null ? id.equals(apply.id) : apply.id == null;
+        if (postId != null ? !postId.equals(apply.postId) : apply.postId != null) return false;
+        return openId != null ? openId.equals(apply.openId) : apply.openId == null;
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        int result = postId != null ? postId.hashCode() : 0;
+        result = 31 * result + (openId != null ? openId.hashCode() : 0);
+        return result;
     }
 }

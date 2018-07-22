@@ -9,4 +9,7 @@ public interface PostRepository extends JpaRepository<Post ,Long>,PagingAndSorti
 
     List<Post> findAllByOpenId(String openId);
 
+    boolean existsByOpenIdAndId(String openId, Long id);
+
+
 }

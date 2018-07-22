@@ -1,10 +1,12 @@
 package com.hlct.bbsservice.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.stereotype.Component;
 
 /**
  * 请求返回实体类
  */
+
 @Component
 public class ResultInfo<T> {
     public static final int RESULT_SUCCESS = 0;

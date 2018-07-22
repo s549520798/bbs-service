@@ -56,8 +56,8 @@ public class PostController {
     }
 
     @GetMapping(value = "/{page}/post")
-    public ResultInfo<Page<Post>> getPosts(@PathVariable int page){
-        Page<Post> postPage = postService.getPostPage(page,10);
+    public ResultInfo<Page<Post>> getPosts(@PathVariable int page) {
+        Page<Post> postPage = postService.getPostPage(page, 10);
         ResultInfo<Page<Post>> resultInfo = new ResultInfo<>();
         log.info("一共post数目 ======" + postPage.getTotalElements());
         log.info("一共分了多少页 =====" + postPage.getTotalPages());
@@ -67,26 +67,37 @@ public class PostController {
         resultInfo.setData(postPage);
         return resultInfo;
     }
+
     @GetMapping(value = "/{page}/getPosts")
-    public ResultInfo<List<PostPlus>> getPostsWithUser(@PathVariable int page){
+    public ResultInfo<List<PostPlus>> getPostsWithUser(@PathVariable int page) {
         ResultInfo<List<PostPlus>> resultInfo = new ResultInfo<>();
         List<PostPlus> list = postService.getPagePosts(page);
-        if (list != null && list.size() > 0){
+        if (list != null && list.size() > 0) {
             resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
             resultInfo.setMessage("获取成功！");
             resultInfo.setData(list);
-        }else {
+        } else {
             resultInfo.setCode(ResultInfo.RESULT_ERROR);
             resultInfo.setMessage("没有获取到数据");
         }
         return resultInfo;
     }
+
+    @GetMapping(value = "/{postId}/getPostAndAuthor")
+    public ResultInfo<PostPlus> getPostAndAuthor(@PathVariable long postId) {
+        ResultInfo<PostPlus> resultInfo = new ResultInfo<>();
+        resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
+        resultInfo.setMessage("获取成功");
+        resultInfo.setData(postService.getPostAndAuthor(postId));
+        return resultInfo;
+    }
+
     private void getListReturn(ResultInfo<List<Post>> resultInfo, List<Post> list) {
-        if (list != null && list.size() > 0){
+        if (list != null && list.size() > 0) {
             resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
             resultInfo.setMessage("获取成功");
             resultInfo.setData(list);
-        }else {
+        } else {
             resultInfo.setCode(ResultInfo.RESULT_ERROR);
             resultInfo.setMessage("获取失败");
         }

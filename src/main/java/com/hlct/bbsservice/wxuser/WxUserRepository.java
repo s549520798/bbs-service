@@ -23,9 +23,14 @@ public interface WxUserRepository extends JpaRepository<WxUser, Long> {
                               @Param(value = "gender") int gender, @Param(value = "language") String language,
                               @Param(value = "city") String city, @Param(value = "province") String province,
                               @Param(value = "country") String country, @Param(value = "avatarUrl") String avatarUrl);
+
     @Modifying
     @Query("update WxUser wu set wu.phoneNumber = :phone , wu.realName = :realName where wu.openId = :openId")
     void updatePhoneByOpenId(@Param("phone") String phone,
                              @Param("realName") String realName,
                              @Param("openId") String openId);
+
+    @Query("UPDATE  WxUser wu set wu.phoneNumber = :phone where wu.openId = :openId")
+    void updatePhoneNumberByOpenId(@Param("phone") String phone,
+                                   @Param("openId") String openId);
 }
