@@ -110,6 +110,14 @@ public class ApplyServiceImpl implements ApplyService {
         }
     }
 
+    @Override
+    public List<ApplyUser> getApplicants(long postId) {
+        List<ApplyUser> list = new ArrayList<>();
+        List<Apply> applies = repository.findAllByPostId(postId);
+        getApplyUsers(list, applies);
+        return list;
+    }
+
     @Transactional
     @Override
     public int updateStatusByOpenIdAndApplyId(String openId, long applyId, String status) {

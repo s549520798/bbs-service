@@ -125,6 +125,22 @@ public class ApplyController {
         return resultInfo;
     }
 
+    @GetMapping(value = "/{postId}/getApplicants")
+    public ResultInfo<List<ApplyUser>> getApplicant(@PathVariable long postId) {
+        ResultInfo<List<ApplyUser>> resultInfo = new ResultInfo<>();
+        List<ApplyUser> list = applyService.getApplicants(postId);
+        if (list == null) {
+            resultInfo.setCode(ResultInfo.RESULT_ERROR);
+            resultInfo.setMessage("没有申请者");
+            resultInfo.setData(null);
+        } else {
+            resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
+            resultInfo.setMessage("获取列表成功");
+            resultInfo.setData(list);
+        }
+        return resultInfo;
+    }
+
     @PostMapping(value = "/{applyId}/updateStatus")
     public ResultInfo<Apply> updateStatus(@PathVariable long applyId,
                                           @RequestParam(name = "openId") String openId,

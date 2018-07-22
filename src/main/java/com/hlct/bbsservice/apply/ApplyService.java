@@ -73,6 +73,8 @@ public interface ApplyService {
      */
     List<ApplyUser> getApplicants(long postId,String openId);
 
+    List<ApplyUser> getApplicants(long postId);
+
     int updateStatusByOpenIdAndApplyId(String openId,long applyId,String status);
 
 }

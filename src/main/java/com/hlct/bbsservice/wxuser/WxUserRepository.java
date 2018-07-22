@@ -29,7 +29,7 @@ public interface WxUserRepository extends JpaRepository<WxUser, Long> {
     void updatePhoneByOpenId(@Param("phone") String phone,
                              @Param("realName") String realName,
                              @Param("openId") String openId);
-
+    @Modifying
     @Query("UPDATE  WxUser wu set wu.phoneNumber = :phone where wu.openId = :openId")
     void updatePhoneNumberByOpenId(@Param("phone") String phone,
                                    @Param("openId") String openId);
