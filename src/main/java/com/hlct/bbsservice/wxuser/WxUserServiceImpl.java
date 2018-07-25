@@ -1,19 +1,16 @@
 package com.hlct.bbsservice.wxuser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hlct.bbsservice.common.ResultInfo;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.beans.Transient;
 import java.io.IOException;
 
 @Service

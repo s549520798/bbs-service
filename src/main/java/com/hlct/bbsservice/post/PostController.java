@@ -59,9 +59,9 @@ public class PostController {
     public ResultInfo<Page<Post>> getPosts(@PathVariable int page) {
         Page<Post> postPage = postService.getPostPage(page, 10);
         ResultInfo<Page<Post>> resultInfo = new ResultInfo<>();
-        log.info("一共post数目 ======" + postPage.getTotalElements());
-        log.info("一共分了多少页 =====" + postPage.getTotalPages());
-        log.info("当前页面所有数 =====" + postPage.getContent().size());
+//        log.info("一共post数目 ======" + postPage.getTotalElements());
+//        log.info("一共分了多少页 =====" + postPage.getTotalPages());
+//        log.info("当前页面所有数 =====" + postPage.getContent().size());
         resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
         resultInfo.setMessage("获取page成功");
         resultInfo.setData(postPage);
