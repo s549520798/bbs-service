@@ -11,6 +11,10 @@ public class ServiceProperties {
     private String imagePath;
     @Value("${web.upload-path}")
     private String uploadPath;
+    @Value("${wx.appid}")
+    private String appid;    //小程序 app id
+    @Value("${wx.secret}")
+    private String secret;    //小程序 密钥
 
     public String getServiceDomain() {
         return serviceDomain;
@@ -34,5 +38,21 @@ public class ServiceProperties {
 
     public void setUploadPath(String uploadPath) {
         this.uploadPath = uploadPath;
+    }
+
+    public String getAppid() {
+        return appid;
+    }
+
+    public void setAppid(String appid) {
+        this.appid = appid;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 }

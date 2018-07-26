@@ -1,6 +1,7 @@
 package com.hlct.bbsservice.wxuser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hlct.bbsservice.common.ServiceProperties;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +22,12 @@ public class WxUserServiceImpl implements WxUserService {
     private final OkHttpClient okHttpClient;
     private ObjectMapper mapper;
     private final WxUserRepository repository;
+    private ServiceProperties serviceProperties;
 
     @Autowired
-    public WxUserServiceImpl(JdbcTemplate jdbcTemplate, ObjectMapper mapper, WxUserRepository repository) {
+    public WxUserServiceImpl(JdbcTemplate jdbcTemplate, ObjectMapper mapper, WxUserRepository repository, ServiceProperties serviceProperties) {
         this.jdbcTemplate = jdbcTemplate;
+        this.serviceProperties = serviceProperties;
         this.okHttpClient = new OkHttpClient();
         this.mapper = mapper;
         this.repository = repository;
@@ -35,8 +38,8 @@ public class WxUserServiceImpl implements WxUserService {
         WxUser result;
 
         RequestBody requestBody = new FormBody.Builder()
-                .add("appid", "wx2f344148ddce304c")
-                .add("secret", "7fab8b8de80a5e73aed96aaf26c3f5f1")
+                .add("appid", serviceProperties.getAppid())
+                .add("secret", serviceProperties.getSecret())
                 .add("js_code", code)
                 .add("grant_type", "authorization_code")
                 .build();
@@ -49,26 +52,26 @@ public class WxUserServiceImpl implements WxUserService {
         try {
             response = okHttpClient.newCall(request).execute();
             if (response.isSuccessful()) {
-                //微信后台返回结果
-                String wxResult = response.body().string();
-                log.info("从微信后台获取到的信息 ：" +  wxResult);
-                WxIdInfo info = mapper.readValue(wxResult, WxIdInfo.class);
-                //数据库查找是否存在此openid 用户
-                boolean isExists = repository.existsByOpenId(info.getOpenid());
-                if (!isExists) {
-                    //如果不存在，将 此用户储存为新用户，并返回只带openID的用户信息
-                    log.info("用户不存在，新加用户");
-                    WxUser user = new WxUser();
-                    user.setOpenId(info.getOpenid());
-                    user.setSessionKey(info.getSession_key());
-                    return repository.save(user);
+                    //微信后台返回结果
+                    String wxResult = response.body().string();
+                    log.info("从微信后台获取到的信息 ：" +  wxResult);
+                    WxIdInfo info = mapper.readValue(wxResult, WxIdInfo.class);
+                    //数据库查找是否存在此openid 用户
+                    boolean isExists = repository.existsByOpenId(info.getOpenid());
+                    if (!isExists) {
+                        //如果不存在，将 此用户储存为新用户，并返回只带openID的用户信息
+                        log.info("用户不存在，新加用户");
+                        WxUser user = new WxUser();
+                        user.setOpenId(info.getOpenid());
+                        user.setSessionKey(info.getSession_key());
+                        return repository.save(user);
 
 
-                } else {
-                    // 此用户 之前存在在数据库中， 但是不确定此用户是否已将用户信息授权
-                   result = repository.findWxUserByOpenId(info.getOpenid());
-                   return result;
-                }
+                    } else {
+                        // 此用户 之前存在在数据库中， 但是不确定此用户是否已将用户信息授权
+                        result = repository.findWxUserByOpenId(info.getOpenid());
+                        return result;
+                    }
             } else {
                 //从微信后台获取用户信息失败,返回null。
                 return  null;
