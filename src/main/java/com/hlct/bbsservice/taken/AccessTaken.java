@@ -56,11 +56,11 @@ public class AccessTaken {
         this.createTime = createTime;
     }
 
-    public boolean usable(){
+    public boolean usable() {
         Date now = new Date();
-        if(this.getCreateTime().getTime() - now.getTime() > 7000){
+        if (now.getTime() - this.getCreateTime().getTime() > 7000 * 1000) {
             return false;
-        }else {
+        } else {
             return true;
         }
     }
