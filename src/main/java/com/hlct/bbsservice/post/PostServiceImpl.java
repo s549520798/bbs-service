@@ -65,9 +65,9 @@ public class PostServiceImpl implements PostService {
         Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"postTime"));
         PageRequest pageRequest =  PageRequest.of(page,pageSize,sort);
         Page<Post> postPage = repository.findAll(pageRequest);
-        log.info("一共post数目 ======" + postPage.getTotalElements());
-        log.info("一共分了多少页 =====" + postPage.getTotalPages());
-        log.info("当前页面所有数 =====" + postPage.getContent().size());
+//        log.info("一共post数目 ======" + postPage.getTotalElements());
+//        log.info("一共分了多少页 =====" + postPage.getTotalPages());
+//        log.info("当前页面所有数 =====" + postPage.getContent().size());
         List<Post> list = postPage.getContent();
         if (postPage.getContent().size() > 0){
             List<PostPlus> postPluses = new ArrayList<>();

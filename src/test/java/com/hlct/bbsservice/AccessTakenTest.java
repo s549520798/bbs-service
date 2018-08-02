@@ -7,6 +7,7 @@ import com.hlct.bbsservice.taken.AccessTakenRepository;
 import com.hlct.bbsservice.taken.AccessTakenServiceImpl;
 import com.hlct.bbsservice.template.Template;
 import com.hlct.bbsservice.template.TemplateParameter;
+import com.hlct.bbsservice.template.TemplateServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
@@ -48,6 +50,7 @@ public class AccessTakenTest {
         log.error(repository.findTopByOrderByCreateTimeDesc().toString());
         Assert.assertEquals(accessTaken2.getAccessTaken(), repository.findTopByOrderByCreateTimeDesc().getAccessTaken());
         Assert.assertEquals(9, repository.count());
+
     }
 
     @Test
@@ -73,6 +76,8 @@ public class AccessTakenTest {
         log.info(accessTaken.toString());
         Assert.assertNotNull(accessTaken);
     }
+
+
 
 
 }

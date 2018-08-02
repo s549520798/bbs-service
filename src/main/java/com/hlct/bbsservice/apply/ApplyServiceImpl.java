@@ -1,19 +1,22 @@
 package com.hlct.bbsservice.apply;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hlct.bbsservice.post.Post;
 import com.hlct.bbsservice.post.PostPlus;
 import com.hlct.bbsservice.post.PostRepository;
-import com.hlct.bbsservice.wxuser.WxUser;
+import com.hlct.bbsservice.template.Template;
+import com.hlct.bbsservice.template.TemplateConstant;
+import com.hlct.bbsservice.template.TemplateParameter;
+import com.hlct.bbsservice.template.TemplateServiceImpl;
 import com.hlct.bbsservice.wxuser.WxUserRepository;
-import javafx.collections.transformation.SortedList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class ApplyServiceImpl implements ApplyService {
@@ -22,12 +25,16 @@ public class ApplyServiceImpl implements ApplyService {
     private final ApplyRepository repository;
     private final PostRepository postRepository;
     private final WxUserRepository wxUserRepository;
+    private final TemplateServiceImpl templateService;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    public ApplyServiceImpl(ApplyRepository repository, PostRepository postRepository, WxUserRepository wxUserRepository) {
+    public ApplyServiceImpl(ApplyRepository repository, PostRepository postRepository, WxUserRepository wxUserRepository, TemplateServiceImpl templateService, ObjectMapper objectMapper) {
         this.repository = repository;
         this.postRepository = postRepository;
         this.wxUserRepository = wxUserRepository;
+        this.templateService = templateService;
+        this.objectMapper = objectMapper;
     }
 
 
@@ -60,6 +67,33 @@ public class ApplyServiceImpl implements ApplyService {
     @Override
     public Apply findOne(long applyId) {
         return repository.getOne(applyId);
+    }
+
+    @Override
+    public boolean notifyAuthor(String formId, Apply apply) {
+        Post post = postRepository.getOne(apply.getPostId());
+        String postJson = "";
+        try {
+            postJson = objectMapper.writeValueAsString(post);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String applyTime = dateFormat.format(apply.getApplyTime());
+        Map<String,TemplateParameter> data = new LinkedHashMap<>();
+        data.put("keyword1", new TemplateParameter(post.getTitle()));    //活动标题
+        data.put("keyword2", new TemplateParameter(applyTime));//申请时间
+        data.put("keyword3", new TemplateParameter(apply.getMessage()));//说明
+        data.put("keyword4", new TemplateParameter(apply.getPhoneNumber()));//电话号码
+        data.put("keyword5", new TemplateParameter(apply.getName()));//申请人
+        Template template = new Template();
+        template.setToUser(post.getOpenId()); //发帖人openId
+        template.setTemplateId(TemplateConstant.TEMPLATE_TO_REVIEW);
+        template.setFormId(formId);           //表单Id
+        template.setPage("/pages/activity/activity?post=" + postJson);
+        template.setEmphasisKeyword("keyword1.DATA");
+        template.setData(data);
+        return templateService.applyNotify(template);
     }
 
     @Override

@@ -26,8 +26,8 @@ public class PostController {
     public ResultInfo save(@ModelAttribute Post post) {
         ResultInfo<Post> resultInfo = new ResultInfo<>();
         log.info(post.toString());
-        if (post != null) {
-            Post post1 = postService.savePost(post);
+        Post post1 = postService.savePost(post);
+        if (post1 != null) {
             resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
             resultInfo.setMessage("发布成功");
             resultInfo.setData(post1);
@@ -36,6 +36,11 @@ public class PostController {
             resultInfo.setMessage("发布失败");
         }
         return resultInfo;
+    }
+    @PostMapping(value = "/saveAndNotify")
+    public ResultInfo saveAndNotify(@ModelAttribute Post post,@RequestParam(name = "formId") String formId){
+        ResultInfo resultInfo = new ResultInfo();
+        return null;
     }
 
     @GetMapping(value = "/getAllPost")

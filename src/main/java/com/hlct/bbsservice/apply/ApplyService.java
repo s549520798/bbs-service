@@ -34,6 +34,14 @@ public interface ApplyService {
     Apply findOne(long applyId);
 
     /**
+     * 通过模板消息通知发布者 ，提示有人申请，需要审核
+     * @param formId 表单Id，通过小程序获取
+     * @param apply 申请表单
+     * @return 是否通知成功
+     */
+    boolean notifyAuthor(String formId,Apply apply);
+
+    /**
      * 通过openId 找到我申请的 post
      *
      * @param openId openId
