@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 public class PostServiceImpl implements PostService {
 
@@ -50,28 +51,27 @@ public class PostServiceImpl implements PostService {
     }
 
 
-
     @Override
-    public Page<Post> getPostPage(int page,int pageCount) {
-        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"postTime"));
-        PageRequest pageRequest =  PageRequest.of(page,pageCount,sort);
-        return  repository.findAll(pageRequest);
+    public Page<Post> getPostPage(int page, int pageCount) {
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "postTime"));
+        PageRequest pageRequest = PageRequest.of(page, pageCount, sort);
+        return repository.findAll(pageRequest);
     }
 
     @Override
     public List<PostPlus> getPagePosts(int page) {
         //规定每页10条数据
         int pageSize = 10;
-        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"postTime"));
-        PageRequest pageRequest =  PageRequest.of(page,pageSize,sort);
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "postTime"));
+        PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
         Page<Post> postPage = repository.findAll(pageRequest);
 //        log.info("一共post数目 ======" + postPage.getTotalElements());
 //        log.info("一共分了多少页 =====" + postPage.getTotalPages());
 //        log.info("当前页面所有数 =====" + postPage.getContent().size());
         List<Post> list = postPage.getContent();
-        if (postPage.getContent().size() > 0){
+        if (postPage.getContent().size() > 0) {
             List<PostPlus> postPluses = new ArrayList<>();
-            for (Post post : list){
+            for (Post post : list) {
                 PostPlus postPlus = new PostPlus();
                 postPlus.setPost(post);
                 postPlus.setWxUser(wxUserRepository.findWxUserByOpenId(post.getOpenId()));
@@ -80,7 +80,7 @@ public class PostServiceImpl implements PostService {
                 postPluses.add(postPlus);
             }
             return postPluses;
-        }else {
+        } else {
             return null;
         }
     }
