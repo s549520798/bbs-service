@@ -1,6 +1,7 @@
 package com.hlct.bbsservice.post;
 
 import com.hlct.bbsservice.common.ResultInfo;
+import com.hlct.bbsservice.common.ResultPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +71,15 @@ public class PostController {
         resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
         resultInfo.setMessage("获取page成功");
         resultInfo.setData(postPage);
+        return resultInfo;
+    }
+    @GetMapping(value = "/{page}/getPostInPage")
+    public ResultInfo<ResultPage<PostPlus>> getPostsInPage(@PathVariable int page){
+        ResultInfo<ResultPage<PostPlus>> resultInfo = new ResultInfo<>();
+        ResultPage<PostPlus> resultPage = postService.getPostInPage(page);
+        resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
+        resultInfo.setMessage("获取成功");
+        resultInfo.setData(resultPage);
         return resultInfo;
     }
 

@@ -2,6 +2,7 @@ package com.hlct.bbsservice.post;
 
 
 import com.hlct.bbsservice.apply.ApplyRepository;
+import com.hlct.bbsservice.common.ResultPage;
 import com.hlct.bbsservice.wxuser.WxUser;
 import com.hlct.bbsservice.wxuser.WxUserRepository;
 import org.slf4j.Logger;
@@ -83,6 +84,30 @@ public class PostServiceImpl implements PostService {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public ResultPage<PostPlus> getPostInPage(int page) {
+        int pageSize = 10;
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "postTime"));
+        PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
+        Page<Post> postPage = repository.findAll(pageRequest);
+        ResultPage<PostPlus> resultPage = new ResultPage<>();
+        resultPage.setPageSize(10);
+        resultPage.setCurrentPage(page);
+        resultPage.setLast(postPage.isLast());
+        resultPage.setNextPage(postPage.hasNext() ? postPage.nextPageable().getPageNumber() : -1);
+        List<PostPlus> postPluses = new ArrayList<>();
+        postPage.getContent()
+                .forEach(post -> {
+                    PostPlus postPlus = new PostPlus();
+                    postPlus.setPost(post);
+                    postPlus.setWxUser(wxUserRepository.findWxUserByOpenId(post.getOpenId()));
+                    postPlus.setCalling(applyRepository.countByPostId(post.getId()) <= Integer.valueOf(post.getParticipatorMax()));
+                    postPluses.add(postPlus);
+                });
+        resultPage.setContent(postPluses);
+        return resultPage;
     }
 
     @Override

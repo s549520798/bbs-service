@@ -1,18 +1,16 @@
 package com.hlct.bbsservice.travels_note;
 
 import com.hlct.bbsservice.common.ResultInfo;
+import com.hlct.bbsservice.common.ResultPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 
 @RestController
-@RequestMapping(value = "/note")
+@RequestMapping(value = "/travels")
 public class TravelsNoteController {
 
     private TravelsNoteServiceImpl travelsNoteService;
@@ -23,7 +21,7 @@ public class TravelsNoteController {
         this.travelsNoteService = travelsNoteService;
     }
     @PostMapping(value = "/save")
-    public ResultInfo<TravelsNote> save(TravelsNote travelsNote){
+    public ResultInfo<TravelsNote> save(@ModelAttribute TravelsNote travelsNote){
         ResultInfo<TravelsNote> resultInfo = new ResultInfo<>();
         TravelsNote travelsNote1 =  travelsNoteService.saveTravelNote(travelsNote);
         if (travelsNote1 != null){
@@ -36,9 +34,18 @@ public class TravelsNoteController {
         }
         return resultInfo;
     }
-
-    public ResultInfo<List<TravelsNotePlus>> getAll(){
-
-        return null;
+    @GetMapping(value = "/{page}/getNotes")
+    public ResultInfo<ResultPage<TravelsNotePlus>> getNotesInPage(@PathVariable int page){
+        ResultInfo<ResultPage<TravelsNotePlus>> resultInfo = new ResultInfo<>();
+        ResultPage<TravelsNotePlus> resultPage = travelsNoteService.findNotesByPage(page);
+        if (resultPage.getContent() == null){
+            resultInfo.setCode(ResultInfo.RESULT_ERROR);
+            resultInfo.setMessage("获取失败");
+        }else {
+            resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
+            resultInfo.setMessage("获取成功");
+            resultInfo.setData(resultPage);
+        }
+        return resultInfo;
     }
 }

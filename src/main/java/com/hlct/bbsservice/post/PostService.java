@@ -1,6 +1,7 @@
 package com.hlct.bbsservice.post;
 
 
+import com.hlct.bbsservice.common.ResultPage;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -45,6 +46,7 @@ interface PostService {
      */
     List<PostPlus> getPagePosts(int page);
 
+    ResultPage<PostPlus> getPostInPage(int page);
 
     List<Post> getAllByOpenId(String openId);
 

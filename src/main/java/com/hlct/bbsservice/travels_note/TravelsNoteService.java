@@ -1,5 +1,7 @@
 package com.hlct.bbsservice.travels_note;
 
+import com.hlct.bbsservice.common.ResultPage;
+
 import java.util.List;
 
 public interface TravelsNoteService {
@@ -26,6 +28,6 @@ public interface TravelsNoteService {
 
     List<TravelsNotePlus> findAll();
 
-    NotesPage findNotesByPage(int page);
+    ResultPage<TravelsNotePlus> findNotesByPage(int page);
 
 }
