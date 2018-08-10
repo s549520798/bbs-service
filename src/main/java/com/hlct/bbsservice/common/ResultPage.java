@@ -7,15 +7,6 @@ public class ResultPage<T> {
     private int pageSize;
     private int currentPage;
     private boolean isLast;
-
-    public boolean isLast() {
-        return isLast;
-    }
-
-    public void setLast(boolean last) {
-        isLast = last;
-    }
-
     private int nextPage;
     private int totalPage;
     private List<T> content;
@@ -58,5 +49,12 @@ public class ResultPage<T> {
 
     public void setContent(List<T> content) {
         this.content = content;
+    }
+    public boolean isLast() {
+        return isLast;
+    }
+
+    public void setLast(boolean last) {
+        isLast = last;
     }
 }
