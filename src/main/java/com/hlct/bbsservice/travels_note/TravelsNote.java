@@ -17,6 +17,8 @@ public class TravelsNote {
     private String content;
     @Column(name = "image_urls",length = 4000)
     private String imageUrls;
+
+    private String type;
     @CreatedDate
     @Column(name = "create_time")
     private Date createTime;
@@ -81,6 +83,14 @@ public class TravelsNote {
         this.openId = openId;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "TravelsNote{" +
@@ -88,6 +98,7 @@ public class TravelsNote {
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", imageUrls='" + imageUrls + '\'' +
+                ", type='" + type + '\'' +
                 ", createTime=" + createTime +
                 ", postId=" + postId +
                 ", openId='" + openId + '\'' +
