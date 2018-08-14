@@ -20,6 +20,14 @@ public class Form {
     @Column(name = "save_date")
     private Date saveDate;
 
+    public Form() {
+    }
+
+    public Form(String formId, String openId) {
+        this.formId = formId;
+        this.openId = openId;
+    }
+
     public Long getId() {
         return id;
     }
