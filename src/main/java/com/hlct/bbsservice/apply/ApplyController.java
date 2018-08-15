@@ -2,6 +2,8 @@ package com.hlct.bbsservice.apply;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hlct.bbsservice.common.ResultInfo;
+import com.hlct.bbsservice.form.Form;
+import com.hlct.bbsservice.form.FormServiceImpl;
 import com.hlct.bbsservice.post.PostPlus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/apply")
@@ -20,11 +21,13 @@ public class ApplyController {
     private ObjectMapper objectMapper;
     private static final Logger log = LoggerFactory.getLogger(ApplyController.class);
     private final ApplyServiceImpl applyService;
+    private final FormServiceImpl formService;
 
     @Autowired
-    public ApplyController(ObjectMapper objectMapper, ApplyServiceImpl applyService) {
+    public ApplyController(ObjectMapper objectMapper, ApplyServiceImpl applyService, FormServiceImpl formService) {
         this.objectMapper = objectMapper;
         this.applyService = applyService;
+        this.formService = formService;
     }
 
     @PostMapping(value = "/save")
@@ -32,8 +35,9 @@ public class ApplyController {
         ResultInfo<Apply> resultInfo = new ResultInfo<>();
         Apply a = applyService.save(apply);
         if (a != null) {
+            boolean notified = applyService.notifyAuthor(a);
             resultInfo.setCode(ResultInfo.RESULT_SUCCESS);
-            resultInfo.setMessage("提交成功");
+            resultInfo.setMessage(notified ? "申请成功并通知成功": "申请成功但通知失败");
             resultInfo.setData(a);
         } else {
             resultInfo.setCode(ResultInfo.RESULT_ERROR);
@@ -52,7 +56,7 @@ public class ApplyController {
             Apply apply = objectMapper.readValue(p1,Apply.class);
             Apply apply1 = applyService.save(apply);
             if (apply1 != null) {
-                boolean hasNotified = applyService.notifyAuthor(formId, apply1);
+                boolean hasNotified = applyService.notifyAuthor(apply1);
                 if (hasNotified) {
                     resultInfo.setMessage("申请并成功通知");
                 } else {

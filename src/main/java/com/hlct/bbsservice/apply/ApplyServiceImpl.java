@@ -2,6 +2,8 @@ package com.hlct.bbsservice.apply;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hlct.bbsservice.form.Form;
+import com.hlct.bbsservice.form.FormServiceImpl;
 import com.hlct.bbsservice.post.Post;
 import com.hlct.bbsservice.post.PostPlus;
 import com.hlct.bbsservice.post.PostRepository;
@@ -9,6 +11,7 @@ import com.hlct.bbsservice.template.Template;
 import com.hlct.bbsservice.template.TemplateConstant;
 import com.hlct.bbsservice.template.TemplateParameter;
 import com.hlct.bbsservice.template.TemplateServiceImpl;
+import com.hlct.bbsservice.wxuser.WxUser;
 import com.hlct.bbsservice.wxuser.WxUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,14 +29,16 @@ public class ApplyServiceImpl implements ApplyService {
     private final PostRepository postRepository;
     private final WxUserRepository wxUserRepository;
     private final TemplateServiceImpl templateService;
+    private final FormServiceImpl formService;
     private ObjectMapper objectMapper;
 
     @Autowired
-    public ApplyServiceImpl(ApplyRepository repository, PostRepository postRepository, WxUserRepository wxUserRepository, TemplateServiceImpl templateService, ObjectMapper objectMapper) {
+    public ApplyServiceImpl(ApplyRepository repository, PostRepository postRepository, WxUserRepository wxUserRepository, TemplateServiceImpl templateService, FormServiceImpl formService, ObjectMapper objectMapper) {
         this.repository = repository;
         this.postRepository = postRepository;
         this.wxUserRepository = wxUserRepository;
         this.templateService = templateService;
+        this.formService = formService;
         this.objectMapper = objectMapper;
     }
 
@@ -70,8 +75,16 @@ public class ApplyServiceImpl implements ApplyService {
     }
 
     @Override
-    public boolean notifyAuthor(String formId, Apply apply) {
+    public boolean notifyAuthor(Apply apply) {
         Post post = postRepository.getOne(apply.getPostId());
+        Form form = formService.getValidFormId(post.getOpenId());
+        String formId;
+        if (form != null){
+            formId = form.getFormId();
+            formService.deleteInvalidFormId(form);
+        }else {
+            formId = "valid form id";
+        }
         String postJson = "";
         try {
             postJson = objectMapper.writeValueAsString(post);
@@ -80,7 +93,7 @@ public class ApplyServiceImpl implements ApplyService {
         }
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String applyTime = dateFormat.format(apply.getApplyTime());
-        Map<String,TemplateParameter> data = new LinkedHashMap<>();
+        Map<String, TemplateParameter> data = new LinkedHashMap<>();
         data.put("keyword1", new TemplateParameter(post.getTitle()));    //活动标题
         data.put("keyword2", new TemplateParameter(applyTime));//申请时间
         data.put("keyword3", new TemplateParameter(apply.getMessage()));//说明
@@ -158,24 +171,62 @@ public class ApplyServiceImpl implements ApplyService {
         //验证openID是否是发布人
         Apply apply = repository.getOne(applyId);
         boolean isAuthor = postRepository.existsByOpenIdAndId(openId, apply.getPostId());
-        if (isAuthor && status != null){
+        if (isAuthor && status != null) {
             int hasConfirm;
             int index;
-            if (status.equals("修改")){
+            if (status.equals("修改")) {
                 hasConfirm = 0;
-                index = repository.updateStatus(applyId,"未确认",hasConfirm);
-            }else if (status.equals("通过") || status.equals("拒绝")){
+                index = repository.updateStatus(applyId, "未确认", hasConfirm);
+            } else if (status.equals("通过") || status.equals("拒绝")) {
                 hasConfirm = 1;
-                index = repository.updateStatus(applyId,status,hasConfirm);
-            }else {
+                index = repository.updateStatus(applyId, status, hasConfirm);
+                if (index == 1){
+                    Form form = formService.getValidFormId(apply.getOpenId());
+                    if (form != null){
+                        formService.deleteInvalidFormId(form);
+                        boolean hasNotify = notifyApplicant(form.getFormId(),apply,status);
+                    }
+
+                }
+            } else {
                 index = 0;
             }
             return index;
-        }else {
+        } else {
             return -1;
         }
     }
 
+    @Override
+    public boolean notifyApplicant(String formId, Apply apply,String status) {
+        Post post = postRepository.getOne(apply.getPostId());
+        WxUser wxUser = wxUserRepository.findWxUserByOpenId(post.getOpenId());
+        String postJson = "";
+        try {
+            postJson = objectMapper.writeValueAsString(post);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String applyTime = dateFormat.format(apply.getApplyTime());
+        Map<String, TemplateParameter> data = new LinkedHashMap<>();
+        data.put("keyword1", new TemplateParameter(post.getTitle()));    //活动标题
+        data.put("keyword2", new TemplateParameter(post.getDestination())); //活动地点
+        data.put("keyword3", new TemplateParameter(post.getGatherPlace()));//集合时间
+        data.put("keyword4", new TemplateParameter(post.getBeginDate()));//活动开始时间
+        data.put("keyword5", new TemplateParameter(wxUser.getNickName()));//活动发布者
+        data.put("keyword6", new TemplateParameter(post.getGatherTime()));//活动集合时间
+        data.put("keyword7",new TemplateParameter(status));
+        data.put("keyword8",new TemplateParameter(status.equals("通过") ? "恭喜您，申请通过": "不好意思，申请被拒绝"));
+        Template template = new Template();
+        template.setToUser(apply.getOpenId()); //申请人openId
+        template.setTemplateId(TemplateConstant.TEMPLATE_APPLY_REPLY);
+        template.setFormId(formId);           //表单Id
+        template.setPage("/pages/activity/activity?post=" + postJson);
+        template.setEmphasisKeyword("keyword1.DATA");
+        template.setData(data);
+        return templateService.applyNotify(template);
+    }
 
 
     private void getApplyUsers(List<ApplyUser> list, List<Apply> applies) {
